@@ -1,6 +1,6 @@
 import Button from "@mui/material/Button"
 import { AccessAlarm, ThreeDRotation } from "@mui/icons-material"
-
+import Typography from "@mui/material/Typography"
 function App() {
   return (
     <>
@@ -11,6 +11,8 @@ function App() {
       <br></br>
       <AccessAlarm />
       <ThreeDRotation />
+      <br></br>
+      <Typography color="text.secondary">Test Typography</Typography>
     </>
   )
 }
