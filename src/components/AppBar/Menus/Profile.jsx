@@ -30,7 +30,7 @@ const Profile = () => {
           aria-controls={open ? "account-menu" : undefined}
           aria-haspopup="true"
           aria-expanded={open ? "true" : undefined}>
-          <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+          <Avatar sx={{ width: 36, height: 36 }}>M</Avatar>
         </IconButton>
       </Tooltip>
       <Menu
