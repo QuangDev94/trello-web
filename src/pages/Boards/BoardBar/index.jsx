@@ -93,6 +93,9 @@ function BoardBar() {
               height: 30,
               fontSize: 16,
               border: "none",
+              color: "white",
+              cursor: "pointer",
+              "&:first-of-type": { bgcolor: "#a4b0be" },
             },
           }}>
           <Tooltip title="QuangNguyenDev">
