@@ -10,7 +10,7 @@ import AvatarGroup from "@mui/material/AvatarGroup"
 import { Tooltip } from "@mui/material"
 import Button from "@mui/material/Button"
 import PersonAddIcon from "@mui/icons-material/PersonAdd"
-
+import { capitalizeFirstLetter } from "~/utils/formatters"
 const MENU_STYLE = {
   color: "white",
   backgroundColor: "transparent",
@@ -25,7 +25,8 @@ const MENU_STYLE = {
   },
 }
 
-function BoardBar() {
+// eslint-disable-next-line react/prop-types
+function BoardBar({ board }) {
   return (
     <Box
       px={2}
@@ -42,13 +43,15 @@ function BoardBar() {
       <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
         <Chip
           icon={<DashboardIcon />}
-          label="QuangNguyen DEV"
+          // eslint-disable-next-line react/prop-types
+          label={board?.title}
           clickable
           sx={MENU_STYLE}
         />
         <Chip
           icon={<VpnLockIcon />}
-          label="Public/Private workspace"
+          // eslint-disable-next-line react/prop-types
+          label={capitalizeFirstLetter(board?.type)}
           clickable
           sx={MENU_STYLE}
         />

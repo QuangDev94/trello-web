@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from "react"
 import Typography from "@mui/material/Typography"
 import Box from "@mui/material/Box"
@@ -16,8 +17,9 @@ import { ContentCopy, ContentPaste } from "@mui/icons-material"
 import AddCardIcon from "@mui/icons-material/AddCard"
 import Button from "@mui/material/Button"
 import ListCards from "./ListCards/ListCards"
+import { mapOrder } from "~/utils/sorts"
 
-const Column = () => {
+const Column = ({ column }) => {
   const [anchorEl, setAnchorEl] = React.useState(null)
   const open = Boolean(anchorEl)
   const handleClick = (event) => {
@@ -26,6 +28,7 @@ const Column = () => {
   const handleClose = () => {
     setAnchorEl(null)
   }
+  const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, "_id")
   return (
     <Box
       sx={{
@@ -50,7 +53,7 @@ const Column = () => {
         <Typography
           variant="h6"
           sx={{ fontWeight: "bold", cursor: "pointer", fontSize: "1rem" }}>
-          Column title
+          {column?.title}
         </Typography>
         <Box>
           <Tooltip title="more option">
@@ -112,7 +115,7 @@ const Column = () => {
         </Box>
       </Box>
 
-      <ListCards />
+      <ListCards cards={orderedCards} />
 
       <Box
         sx={{
