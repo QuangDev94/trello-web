@@ -12,9 +12,13 @@ import {
   DragOverlay,
   defaultDropAnimationSideEffects,
   closestCorners,
+  rectIntersection,
+  pointerWithin,
+  getFirstCollision,
+  closestCenter,
 } from "@dnd-kit/core"
 import { arrayMove } from "@dnd-kit/sortable"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import Column from "./ListColumns/Column/Column"
 import Card from "./ListColumns/Column/ListCards/Card/Card"
 import { cloneDeep } from "lodash"
@@ -44,6 +48,9 @@ function BoardContent({ board }) {
   const [activeDragItemData, setActiveDragItemData] = useState(null)
   const [oldColumnWhenDraggingCard, setOldColumnWhenDraggingCard] =
     useState(null)
+
+  // Điểm va chạm cuối cùng (fix bug collision)
+  const lastOverId = useRef(null)
 
   useEffect(() => {
     setOrderedColumns(mapOrder(board?.columns, board?.columnOrderIds, "_id"))
@@ -236,13 +243,58 @@ function BoardContent({ board }) {
       },
     }),
   }
+
+  const collisionDetectionStrategy = useCallback(
+    (args) => {
+      if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) {
+        return closestCorners({ ...args })
+      }
+      // Tìm các điểm giao nhau, va chạm -- intersections với con trỏ
+      const pointerIntersections = pointerWithin(args)
+      // Thuật toán phát hiện va chạm sẽ trả về 1 mảng các va chạm ở đây
+      const intersections =
+        pointerIntersections?.length > 0
+          ? pointerIntersections
+          : rectIntersection(args)
+
+      // tìm overId đầu tiên trong mảng intersections ở trên
+      let overId = getFirstCollision(intersections, "id")
+
+      if (overId) {
+        // nếu overId là của column thì sẽ tìm tới cardId gần nhất bên trong khu vực va chạm đó dựa vào thuật toán phát hiện va chạm closestCenter hoặc closestCorners
+        const checkColumn = orderedColumns.find(
+          (column) => column._id === overId,
+        )
+        if (checkColumn) {
+          console.log("overId before: ", overId)
+          overId = closestCenter({
+            ...args,
+            droppableContainers: args.droppableContainers.filter(
+              (container) => {
+                return (
+                  container.id !== overId &&
+                  checkColumn?.cardOrderIds?.includes(container.id)
+                )
+              },
+            ),
+          })[0]?.id
+          console.log("overId after: ", overId)
+        }
+        lastOverId.current = overId
+        return [{ id: overId }]
+      }
+      //  nếu overId null thì trả về mảng rỗng - tránh cash page
+      return lastOverId.current ? [{ id: lastOverId.current }] : []
+    },
+    [activeDragItemType, orderedColumns],
+  )
   return (
     <DndContext
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
       sensors={sensors}
-      collisionDetection={closestCorners}>
+      collisionDetection={collisionDetectionStrategy}>
       <Box
         sx={{
           bgcolor: (theme) =>
