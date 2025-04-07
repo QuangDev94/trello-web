@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React from "react"
+import React, { useState } from "react"
 import Typography from "@mui/material/Typography"
 import Box from "@mui/material/Box"
 import Menu from "@mui/material/Menu"
@@ -20,6 +20,8 @@ import ListCards from "./ListCards/ListCards"
 import { mapOrder } from "~/utils/sorts"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
+import TextField from "@mui/material/TextField"
+import CloseIcon from "@mui/icons-material/Close"
 
 const Column = ({ column }) => {
   const {
@@ -46,6 +48,19 @@ const Column = ({ column }) => {
     setAnchorEl(null)
   }
   const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, "_id")
+
+  // Create new card logic
+  const [isOpenCreateNewCardForm, setIsOpenCreateNewCardForm] = useState(false)
+  const [newCardTitle, setNewCardTitle] = useState("")
+  const createNewCard = () => {
+    if (!newCardTitle) {
+      return
+    }
+    // call Api
+    // close form and clear value
+    setNewCardTitle("")
+    setIsOpenCreateNewCardForm(false)
+  }
   return (
     <div ref={setNodeRef} style={dndKitColumnStyle} {...attributes}>
       <Box
@@ -140,14 +155,93 @@ const Column = ({ column }) => {
           sx={{
             height: (theme) => theme.trello.columnFooterHeight,
             p: 2,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
           }}>
-          <Button startIcon={<AddCardIcon />}>Add new card</Button>
-          <Tooltip title="Drag to move">
-            <DragHandleIcon sx={{ cursor: "pointer" }} />
-          </Tooltip>
+          {isOpenCreateNewCardForm ? (
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                height: "100%",
+              }}>
+              <TextField
+                label="Enter column title..."
+                type="text"
+                size="small"
+                autoFocus
+                variant="outlined"
+                value={newCardTitle}
+                onChange={(e) => setNewCardTitle(e.target.value)}
+                sx={{
+                  "& label": { color: "text.primary" },
+                  "& input": {
+                    color: (theme) => theme.palette.primary.main,
+                    bgcolor: (theme) =>
+                      theme.palette.mode === "dark" ? "#333643" : "white",
+                  },
+                  "& label.Mui-focused": {
+                    color: (theme) => theme.palette.primary.main,
+                  },
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: (theme) => theme.palette.primary.main,
+                    },
+                    "&:hover fieldset": {
+                      borderColor: (theme) => theme.palette.primary.main,
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: (theme) => theme.palette.primary.main,
+                    },
+                    "& .MuiOutlinedInput-input": {
+                      borderRadius: 1,
+                    },
+                  },
+                }}
+              />
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <Button
+                  variant="contained"
+                  size="small"
+                  color="success"
+                  sx={{
+                    boxShadow: "none",
+                    border: "0.5 solid",
+                    borderColor: (theme) => theme.palette.success.main,
+                    "&:hover": {
+                      bgcolor: (theme) => theme.palette.success.main,
+                    },
+                  }}
+                  onClick={createNewCard}>
+                  Add
+                </Button>
+                <CloseIcon
+                  fontSize="small"
+                  sx={{
+                    color: (theme) => theme.palette.warning.light,
+                    cursor: "pointer",
+                  }}
+                  onClick={() => setIsOpenCreateNewCardForm(false)}
+                />
+              </Box>
+            </Box>
+          ) : (
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                height: "100%",
+              }}>
+              <Button
+                startIcon={<AddCardIcon />}
+                onClick={() => setIsOpenCreateNewCardForm(true)}>
+                Add new card
+              </Button>
+              <Tooltip title="Drag to move">
+                <DragHandleIcon sx={{ cursor: "pointer" }} />
+              </Tooltip>
+            </Box>
+          )}
         </Box>
       </Box>
     </div>
