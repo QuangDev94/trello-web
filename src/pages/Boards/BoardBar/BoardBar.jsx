@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import Box from "@mui/material/Box"
 import Chip from "@mui/material/Chip"
 import DashboardIcon from "@mui/icons-material/Dashboard"
@@ -41,13 +42,16 @@ function BoardBar({ board }) {
           theme.palette.mode === "dark" ? "#34495e" : "#1976d2",
       }}>
       <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-        <Chip
-          icon={<DashboardIcon />}
-          // eslint-disable-next-line react/prop-types
-          label={board?.title}
-          clickable
-          sx={MENU_STYLE}
-        />
+        <Tooltip title={board?.description}>
+          <Chip
+            icon={<DashboardIcon />}
+            // eslint-disable-next-line react/prop-types
+            label={board?.title}
+            clickable
+            sx={MENU_STYLE}
+          />
+        </Tooltip>
+
         <Chip
           icon={<VpnLockIcon />}
           // eslint-disable-next-line react/prop-types

@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+import { useState } from "react"
 import Box from "@mui/material/Box"
 import Column from "./Column/Column"
 import Button from "@mui/material/Button"
@@ -7,8 +8,22 @@ import {
   SortableContext,
   horizontalListSortingStrategy,
 } from "@dnd-kit/sortable"
+import TextField from "@mui/material/TextField"
+import CloseIcon from "@mui/icons-material/Close"
 
 const ListColumns = ({ columns }) => {
+  const [isOpenCreateNewColumnForm, setIsOpenCreateNewColumnForm] =
+    useState(false)
+  const [newColumnTitle, setNewColumnTitle] = useState("")
+  const createNewColumn = () => {
+    if (!newColumnTitle) {
+      return
+    }
+    // call Api
+    // close form and clear value
+    setNewColumnTitle("")
+    setIsOpenCreateNewColumnForm(false)
+  }
   return (
     <SortableContext
       items={columns.map((c) => c._id)}
@@ -26,28 +41,94 @@ const ListColumns = ({ columns }) => {
         {columns?.map((column) => {
           return <Column key={column?._id} column={column} />
         })}
-
-        <Box
-          sx={{
-            bgcolor: "#ffffff3d",
-            height: "fit-content",
-            borderRadius: "6px",
-            mx: 2,
-            maxWidth: 200,
-            minWidth: 200,
-          }}>
-          <Button
-            startIcon={<NoteAddIcon />}
+        {isOpenCreateNewColumnForm ? (
+          <Box
             sx={{
-              color: "white",
-              pl: 2.5,
-              py: 1,
-              justifyContent: "flex-start",
-              width: "100%",
+              maxWidth: 250,
+              minWidth: 250,
+              mx: 2,
+              p: 1,
+              borderRadius: "6px",
+              height: "fit-content",
+              bgcolor: "#ffffff3d",
+              display: "flex",
+              flexDirection: "column",
+              gap: 1,
             }}>
-            Add new column
-          </Button>
-        </Box>
+            <TextField
+              label="Enter column title..."
+              type="text"
+              size="small"
+              autoFocus
+              variant="outlined"
+              value={newColumnTitle}
+              onChange={(e) => setNewColumnTitle(e.target.value)}
+              sx={{
+                "& label": { color: "white" },
+                "& input": { color: "white" },
+                "& label.Mui-focused": { color: "white" },
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: "white",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "white",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "white",
+                  },
+                },
+              }}
+            />
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Button
+                variant="contained"
+                size="small"
+                color="success"
+                sx={{
+                  boxShadow: "none",
+                  border: "0.5 solid",
+                  borderColor: (theme) => theme.palette.success.main,
+                  "&:hover": { bgcolor: (theme) => theme.palette.success.main },
+                }}
+                onClick={createNewColumn}>
+                Add Column
+              </Button>
+              <CloseIcon
+                fontSize="small"
+                sx={{
+                  color: "white",
+                  cursor: "pointer",
+                  "&:hover": { color: (theme) => theme.palette.warning.light },
+                }}
+                onClick={() => setIsOpenCreateNewColumnForm(false)}
+              />
+            </Box>
+          </Box>
+        ) : (
+          <Box
+            sx={{
+              bgcolor: "#ffffff3d",
+              height: "fit-content",
+              borderRadius: "6px",
+              mx: 2,
+              maxWidth: 250,
+              minWidth: 250,
+            }}
+            onClick={() => setIsOpenCreateNewColumnForm(true)}>
+            <Button
+              startIcon={<NoteAddIcon />}
+              sx={{
+                color: "white",
+                pl: 2.5,
+                py: 1,
+                justifyContent: "flex-start",
+                width: "100%",
+              }}>
+              Add new column
+            </Button>
+          </Box>
+        )}
       </Box>
     </SortableContext>
   )
