@@ -4,9 +4,7 @@ import ListColumns from "./ListColumns/ListColumns"
 import { mapOrder } from "~/utils/sorts"
 import {
   DndContext,
-  PointerSensor,
-  MouseSensor,
-  TouchSensor,
+  // PointerSensor,
   useSensor,
   useSensors,
   DragOverlay,
@@ -15,6 +13,7 @@ import {
   pointerWithin,
   getFirstCollision,
 } from "@dnd-kit/core"
+import { MouseSensor, TouchSensor } from "~/customLibraries/DndKitSensors"
 import { arrayMove } from "@dnd-kit/sortable"
 import { useCallback, useEffect, useRef, useState } from "react"
 import Column from "./ListColumns/Column/Column"
@@ -28,16 +27,16 @@ const ACTIVE_DRAG_ITEM_TYPE = {
 
 // eslint-disable-next-line react/prop-types
 function BoardContent({ board }) {
-  const pointerSensor = useSensor(PointerSensor, {
-    activationConstraint: { distance: 10 },
-  })
+  // const pointerSensor = useSensor(PointerSensor, {
+  //   activationConstraint: { distance: 10 },
+  // })
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: { distance: 10 },
   })
   const touchSensor = useSensor(TouchSensor, {
     activationConstraint: { delay: 250, tolerance: 100 },
   })
-  const sensors = useSensors(mouseSensor, touchSensor, pointerSensor)
+  const sensors = useSensors(mouseSensor, touchSensor)
 
   const [orderedColumns, setOrderedColumns] = useState([])
 
