@@ -18,6 +18,8 @@ const handler = ({ nativeEvent: event }) => {
 }
 
 export class MouseSensor extends LibMouseSensor {
+  // từ khóa static trong class là chỉ 1 biến thuộc về chính class đó chứ ko phải của bất kì 1 object nào
+  // MouseSensor.activators
   static activators = [{ eventName: "onMouseDown", handler }]
 }
 

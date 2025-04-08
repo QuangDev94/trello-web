@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useState } from "react"
+import { toast } from "react-toastify"
 import Typography from "@mui/material/Typography"
 import Box from "@mui/material/Box"
 import Menu from "@mui/material/Menu"
@@ -54,6 +55,7 @@ const Column = ({ column }) => {
   const [newCardTitle, setNewCardTitle] = useState("")
   const createNewCard = () => {
     if (!newCardTitle) {
+      toast.error("Please enter card title", { position: "top-left" })
       return
     }
     // call Api

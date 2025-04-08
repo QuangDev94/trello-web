@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react"
+import { toast } from "react-toastify"
 import Box from "@mui/material/Box"
 import Column from "./Column/Column"
 import Button from "@mui/material/Button"
@@ -17,6 +18,7 @@ const ListColumns = ({ columns }) => {
   const [newColumnTitle, setNewColumnTitle] = useState("")
   const createNewColumn = () => {
     if (!newColumnTitle) {
+      toast.error("Please enter column title")
       return
     }
     // call Api
