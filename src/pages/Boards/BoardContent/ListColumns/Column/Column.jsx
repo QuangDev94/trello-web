@@ -165,10 +165,11 @@ const Column = ({ column }) => {
                 height: "100%",
               }}>
               <TextField
-                label="Enter column title..."
+                label="Enter card title..."
                 type="text"
                 size="small"
                 autoFocus
+                data-no-dnd="true"
                 variant="outlined"
                 value={newCardTitle}
                 onChange={(e) => setNewCardTitle(e.target.value)}
@@ -203,6 +204,7 @@ const Column = ({ column }) => {
                   variant="contained"
                   size="small"
                   color="success"
+                  data-no-dnd="true"
                   sx={{
                     boxShadow: "none",
                     border: "0.5 solid",
@@ -216,6 +218,7 @@ const Column = ({ column }) => {
                 </Button>
                 <CloseIcon
                   fontSize="small"
+                  data-no-dnd="true"
                   sx={{
                     color: (theme) => theme.palette.warning.light,
                     cursor: "pointer",
