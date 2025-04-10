@@ -12,16 +12,18 @@ import {
 import TextField from "@mui/material/TextField"
 import CloseIcon from "@mui/icons-material/Close"
 
-const ListColumns = ({ columns }) => {
+const ListColumns = ({ columns, createNewColumn, createNewCard }) => {
   const [isOpenCreateNewColumnForm, setIsOpenCreateNewColumnForm] =
     useState(false)
   const [newColumnTitle, setNewColumnTitle] = useState("")
-  const createNewColumn = () => {
+
+  const callAPIcreateNewColumn = async () => {
     if (!newColumnTitle) {
       toast.error("Please enter column title")
       return
     }
     // call Api
+    await createNewColumn(newColumnTitle)
     // close form and clear value
     setNewColumnTitle("")
     setIsOpenCreateNewColumnForm(false)
@@ -41,7 +43,13 @@ const ListColumns = ({ columns }) => {
           "&::-webkit-scrollbar-track": { m: 2 },
         }}>
         {columns?.map((column) => {
-          return <Column key={column?._id} column={column} />
+          return (
+            <Column
+              key={column?._id}
+              column={column}
+              createNewCard={createNewCard}
+            />
+          )
         })}
         {isOpenCreateNewColumnForm ? (
           <Box
@@ -93,7 +101,7 @@ const ListColumns = ({ columns }) => {
                   borderColor: (theme) => theme.palette.success.main,
                   "&:hover": { bgcolor: (theme) => theme.palette.success.main },
                 }}
-                onClick={createNewColumn}>
+                onClick={callAPIcreateNewColumn}>
                 Add Column
               </Button>
               <CloseIcon

@@ -24,7 +24,7 @@ import { CSS } from "@dnd-kit/utilities"
 import TextField from "@mui/material/TextField"
 import CloseIcon from "@mui/icons-material/Close"
 
-const Column = ({ column }) => {
+const Column = ({ column, createNewCard }) => {
   const {
     attributes,
     listeners,
@@ -53,12 +53,13 @@ const Column = ({ column }) => {
   // Create new card logic
   const [isOpenCreateNewCardForm, setIsOpenCreateNewCardForm] = useState(false)
   const [newCardTitle, setNewCardTitle] = useState("")
-  const createNewCard = () => {
+  const callAPICreateNewCard = async () => {
     if (!newCardTitle) {
       toast.error("Please enter card title", { position: "top-left" })
       return
     }
     // call Api
+    await createNewCard({ title: newCardTitle, columnId: column._id })
     // close form and clear value
     setNewCardTitle("")
     setIsOpenCreateNewCardForm(false)
@@ -215,7 +216,7 @@ const Column = ({ column }) => {
                       bgcolor: (theme) => theme.palette.success.main,
                     },
                   }}
-                  onClick={createNewCard}>
+                  onClick={callAPICreateNewCard}>
                   Add
                 </Button>
                 <CloseIcon
