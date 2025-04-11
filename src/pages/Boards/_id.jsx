@@ -10,6 +10,7 @@ import {
   fetchBoardDetailsAPI,
   createColumnAPI,
   createCardAPI,
+  updateBoardDetailsAPI,
 } from "~/assets/apis"
 
 function Board() {
@@ -60,6 +61,10 @@ function Board() {
     }
     setBoard(newBoard)
   }
+  const dndColumnInBoard = async (updateData) => {
+    await updateBoardDetailsAPI(board._id, { columnOrderIds: updateData })
+  }
+
   return (
     <Container disableGutters maxWidth={false} sx={{ height: "100vh" }}>
       <AppBar />
@@ -68,6 +73,7 @@ function Board() {
         board={board}
         createNewColumn={createNewColumn}
         createNewCard={createNewCard}
+        dndColumnInBoard={dndColumnInBoard}
       />
     </Container>
   )
