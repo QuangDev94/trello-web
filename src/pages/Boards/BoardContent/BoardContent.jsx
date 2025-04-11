@@ -26,7 +26,12 @@ const ACTIVE_DRAG_ITEM_TYPE = {
 }
 
 // eslint-disable-next-line react/prop-types
-function BoardContent({ board, createNewColumn, createNewCard }) {
+function BoardContent({
+  board,
+  createNewColumn,
+  createNewCard,
+  dndColumnInBoard,
+}) {
   // const pointerSensor = useSensor(PointerSensor, {
   //   activationConstraint: { distance: 10 },
   // })
@@ -232,7 +237,11 @@ function BoardContent({ board, createNewColumn, createNewCard }) {
         const oldIndex = orderedColumns.findIndex((c) => c._id === active.id)
         const newIndex = orderedColumns.findIndex((c) => c._id === over.id)
         const dndOrderedColumns = arrayMove(orderedColumns, oldIndex, newIndex)
-        // const dndOrderedColumnsIds = dndOrderedColumns.map((c) => c._id)
+
+        // Gọi API cập nhật dữ liệu bên phía BE
+        const dndOrderedColumnsIds = dndOrderedColumns.map((c) => c._id)
+        dndColumnInBoard(dndOrderedColumnsIds)
+        // Cập nhật state
         setOrderedColumns(dndOrderedColumns)
       }
     }
