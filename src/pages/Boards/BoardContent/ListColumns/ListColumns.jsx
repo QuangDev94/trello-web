@@ -17,13 +17,13 @@ const ListColumns = ({ columns, createNewColumn, createNewCard }) => {
     useState(false)
   const [newColumnTitle, setNewColumnTitle] = useState("")
 
-  const callAPIcreateNewColumn = async () => {
+  const callAPIcreateNewColumn = () => {
     if (!newColumnTitle) {
       toast.error("Please enter column title")
       return
     }
     // call Api
-    await createNewColumn(newColumnTitle)
+    createNewColumn(newColumnTitle)
     // close form and clear value
     setNewColumnTitle("")
     setIsOpenCreateNewColumnForm(false)

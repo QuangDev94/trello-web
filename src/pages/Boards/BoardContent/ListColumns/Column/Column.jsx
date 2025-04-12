@@ -18,7 +18,6 @@ import { ContentCopy, ContentPaste } from "@mui/icons-material"
 import AddCardIcon from "@mui/icons-material/AddCard"
 import Button from "@mui/material/Button"
 import ListCards from "./ListCards/ListCards"
-import { mapOrder } from "~/utils/sorts"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import TextField from "@mui/material/TextField"
@@ -48,18 +47,18 @@ const Column = ({ column, createNewCard }) => {
   const handleClose = () => {
     setAnchorEl(null)
   }
-  const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, "_id")
+  const orderedCards = column?.cards
 
   // Create new card logic
   const [isOpenCreateNewCardForm, setIsOpenCreateNewCardForm] = useState(false)
   const [newCardTitle, setNewCardTitle] = useState("")
-  const callAPICreateNewCard = async () => {
+  const callAPICreateNewCard = () => {
     if (!newCardTitle) {
       toast.error("Please enter card title", { position: "top-left" })
       return
     }
     // call Api
-    await createNewCard({ title: newCardTitle, columnId: column._id })
+    createNewCard({ title: newCardTitle, columnId: column._id })
     // close form and clear value
     setNewCardTitle("")
     setIsOpenCreateNewCardForm(false)

@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 import Box from "@mui/material/Box"
 import ListColumns from "./ListColumns/ListColumns"
-import { mapOrder } from "~/utils/sorts"
 import {
   DndContext,
   // PointerSensor,
@@ -31,6 +30,7 @@ function BoardContent({
   createNewColumn,
   createNewCard,
   dndColumnInBoard,
+  dndCardInTheSameColumn,
 }) {
   // const pointerSensor = useSensor(PointerSensor, {
   //   activationConstraint: { distance: 10 },
@@ -56,7 +56,7 @@ function BoardContent({
   const lastOverId = useRef(null)
 
   useEffect(() => {
-    setOrderedColumns(mapOrder(board?.columns, board?.columnOrderIds, "_id"))
+    setOrderedColumns(board?.columns)
   }, [board])
 
   const findColumnByCardId = (cardId) => {
@@ -129,7 +129,6 @@ function BoardContent({
         // cập nhật thứ tự
         nextOverColumn.cardOrderIds = nextOverColumn.cards.map((c) => c._id)
       }
-      console.log("nextColumns: ", nextColumns)
       return nextColumns
     })
   }
@@ -229,6 +228,10 @@ function BoardContent({
           targetColumn.cardOrderIds = dndOrderedCards.map((card) => card._id)
           return nextColumns
         })
+        dndCardInTheSameColumn({
+          dndOrderedCards,
+          oldColumnWhenDraggingCardId: oldColumnWhenDraggingCard._id,
+        })
       }
     }
     // Xử lý kéo thả column trong board content
@@ -237,12 +240,10 @@ function BoardContent({
         const oldIndex = orderedColumns.findIndex((c) => c._id === active.id)
         const newIndex = orderedColumns.findIndex((c) => c._id === over.id)
         const dndOrderedColumns = arrayMove(orderedColumns, oldIndex, newIndex)
-
-        // Gọi API cập nhật dữ liệu bên phía BE
-        const dndOrderedColumnsIds = dndOrderedColumns.map((c) => c._id)
-        dndColumnInBoard(dndOrderedColumnsIds)
         // Cập nhật state
         setOrderedColumns(dndOrderedColumns)
+        // Gọi API cập nhật dữ liệu bên phía BE
+        dndColumnInBoard(dndOrderedColumns)
       }
     }
     setActiveDragItemId(null)
