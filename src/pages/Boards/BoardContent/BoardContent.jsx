@@ -31,6 +31,7 @@ function BoardContent({
   createNewCard,
   dndColumnInBoard,
   dndCardInTheSameColumn,
+  dndCardToTheDifferentColumn,
 }) {
   // const pointerSensor = useSensor(PointerSensor, {
   //   activationConstraint: { distance: 10 },
@@ -65,7 +66,7 @@ function BoardContent({
     )
     return column
   }
-
+  //  Khởi tạo FC chung xử lý việc cập nhật lại state trong trường hợp di chuyển Card giữa các Column khác nhau
   const moveCardBetweenDifferentColumns = (
     overColumn,
     overCardId,
@@ -74,6 +75,7 @@ function BoardContent({
     activeColumn,
     activeCardId,
     activeCardData,
+    triggerFrom,
   ) => {
     setOrderedColumns((prevColumns) => {
       const overCardIndex = overColumn?.cards?.findIndex(
@@ -129,9 +131,19 @@ function BoardContent({
         // cập nhật thứ tự
         nextOverColumn.cardOrderIds = nextOverColumn.cards.map((c) => c._id)
       }
+      if (triggerFrom === "handleDragEnd") {
+        // Call API
+        dndCardToTheDifferentColumn(
+          activeCardId,
+          oldColumnWhenDraggingCard._id,
+          nextOverColumn._id,
+          nextColumns,
+        )
+      }
       return nextColumns
     })
   }
+
   const handleDragStart = (event) => {
     setActiveDragItemId(event?.active?.id)
     setActiveDragItemType(
@@ -173,6 +185,7 @@ function BoardContent({
         activeColumn,
         activeCardId,
         activeCardData,
+        "handleDragOver",
       )
     }
   }
@@ -202,6 +215,7 @@ function BoardContent({
           activeColumn,
           activeCardId,
           activeCardData,
+          "handleDragEnd",
         )
       } else {
         // Kéo thả card trong 1 column
