@@ -12,6 +12,7 @@ import {
   createCardAPI,
   updateBoardDetailsAPI,
   updateColumnDetailsAPI,
+  moveCardToDifferentColumnAPI,
 } from "~/assets/apis"
 import { cloneDeep } from "lodash"
 import { mapOrder } from "~/utils/sorts"
@@ -65,9 +66,15 @@ function Board() {
       (column) => column._id === newCard.columnId,
     )
     if (updatedColumn) {
-      updatedColumn.cards.push(newCard)
-      updatedColumn.cardOrderIds.push(newCard._id)
+      if (updatedColumn.cards.some((card) => card.FE_PlaceholderCard)) {
+        updatedColumn.cards = [newCard]
+        updatedColumn.cardOrderIds = [newCard._id]
+      } else {
+        updatedColumn.cards.push(newCard)
+        updatedColumn.cardOrderIds.push(newCard._id)
+      }
     }
+    console.log("🚀 ~ createNewCard ~ updatedColumn:", updatedColumn)
     setBoard(newBoard)
   }
   const dndColumnInBoard = (updateData) => {
@@ -96,8 +103,36 @@ function Board() {
       cardOrderIds: dndOrderedCardIds,
     })
   }
-  console.log("board init -------", board)
-
+  // B1: Cập nhật mảng CardOrderIds của cả 2 cột
+  // B2: Cập nhật lại trường columnId trong card
+  const dndCardToTheDifferentColumn = (
+    currentCardId,
+    prevColumnId,
+    nextColumnId,
+    dndOrderedColumns,
+  ) => {
+    // Update cho chuẩn dữ liệu state Board
+    const newBoard = cloneDeep(board)
+    newBoard.columns = dndOrderedColumns
+    setBoard(newBoard)
+    // Gọi API
+    // Xử lý vấn đề khi kéo card cuối cùng ra khỏi column
+    let prevCardOrderIdsUpdated = dndOrderedColumns.find(
+      (c) => c._id === prevColumnId,
+    )?.cardOrderIds
+    if (prevCardOrderIdsUpdated[0].includes("placeholder-card"))
+      prevCardOrderIdsUpdated = []
+    moveCardToDifferentColumnAPI({
+      currentCardId,
+      prevColumnId,
+      prevCardOrderIdsUpdated,
+      nextColumnId,
+      nextCardOrderIdsUpdated: dndOrderedColumns.find(
+        (c) => c._id === nextColumnId,
+      )?.cardOrderIds,
+    })
+  }
+  console.log(board)
   if (!board) {
     return (
       <Box
@@ -124,6 +159,7 @@ function Board() {
         createNewCard={createNewCard}
         dndColumnInBoard={dndColumnInBoard}
         dndCardInTheSameColumn={dndCardInTheSameColumn}
+        dndCardToTheDifferentColumn={dndCardToTheDifferentColumn}
       />
     </Container>
   )
