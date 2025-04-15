@@ -32,6 +32,7 @@ function BoardContent({
   dndColumnInBoard,
   dndCardInTheSameColumn,
   dndCardToTheDifferentColumn,
+  deleteColumn,
 }) {
   // const pointerSensor = useSensor(PointerSensor, {
   //   activationConstraint: { distance: 10 },
@@ -339,6 +340,7 @@ function BoardContent({
           columns={orderedColumns}
           createNewColumn={createNewColumn}
           createNewCard={createNewCard}
+          deleteColumn={deleteColumn}
         />
         <DragOverlay dropAnimation={dropAnimation}>
           {!activeDragItemType && null}

@@ -13,10 +13,12 @@ import {
   updateBoardDetailsAPI,
   updateColumnDetailsAPI,
   moveCardToDifferentColumnAPI,
+  deleteColumnAPI,
 } from "~/assets/apis"
 import { cloneDeep } from "lodash"
 import { mapOrder } from "~/utils/sorts"
 import { Box, CircularProgress, Typography } from "@mui/material"
+import { toast } from "react-toastify"
 
 function Board() {
   const [board, setBoard] = useState(null)
@@ -49,7 +51,7 @@ function Board() {
     newColumn.cards = [generatePlaceHolderCard(newColumn)]
     newColumn.cardOrderIds = [generatePlaceHolderCard(newColumn)._id]
     // update state board
-    const newBoard = { ...board }
+    const newBoard = cloneDeep(board)
     newBoard.columns.push(newColumn)
     newBoard.columnOrderIds.push(newColumn._id)
     setBoard(newBoard)
@@ -61,7 +63,7 @@ function Board() {
       boardId: board._id,
     })
 
-    const newBoard = { ...board }
+    const newBoard = cloneDeep(board)
     const updatedColumn = newBoard.columns.find(
       (column) => column._id === newCard.columnId,
     )
@@ -79,7 +81,7 @@ function Board() {
   }
   const dndColumnInBoard = (updateData) => {
     // update state board
-    const newBoard = { ...board }
+    const newBoard = cloneDeep(board)
     const dndOrderedColumnsIds = updateData.map((c) => c._id)
     newBoard.columns = updateData
     newBoard.columnOrderIds = dndOrderedColumnsIds
@@ -132,7 +134,20 @@ function Board() {
       )?.cardOrderIds,
     })
   }
-  console.log(board)
+
+  const deleteColumn = (columnId) => {
+    // updata state board
+    const newBoard = cloneDeep(board)
+    newBoard.columns = newBoard.columns.filter((c) => c._id !== columnId)
+    newBoard.columnOrderIds = newBoard.columnOrderIds.filter(
+      (id) => id !== columnId,
+    )
+    setBoard(newBoard)
+    // call API
+    deleteColumnAPI(columnId).then((res) => {
+      toast.success(res?.deleteResult)
+    })
+  }
   if (!board) {
     return (
       <Box
@@ -160,6 +175,7 @@ function Board() {
         dndColumnInBoard={dndColumnInBoard}
         dndCardInTheSameColumn={dndCardInTheSameColumn}
         dndCardToTheDifferentColumn={dndCardToTheDifferentColumn}
+        deleteColumn={deleteColumn}
       />
     </Container>
   )

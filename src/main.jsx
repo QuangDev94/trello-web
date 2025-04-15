@@ -8,12 +8,17 @@ import theme from "~/theme"
 import { ToastContainer } from "react-toastify"
 import "react-toastify/ReactToastify.min.css"
 
+// config confirm provide
+import { ConfirmProvider } from "material-ui-confirm"
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <CssVarsProvider theme={theme}>
-      <CssBaseline />
-      <App />
-      <ToastContainer position="bottom-left" />
+      <ConfirmProvider>
+        <CssBaseline />
+        <App />
+        <ToastContainer position="bottom-left" />
+      </ConfirmProvider>
     </CssVarsProvider>
   </StrictMode>,
 )
