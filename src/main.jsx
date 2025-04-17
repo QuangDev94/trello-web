@@ -11,14 +11,20 @@ import "react-toastify/ReactToastify.min.css"
 // config confirm provide
 import { ConfirmProvider } from "material-ui-confirm"
 
+// config redux
+import { Provider } from "react-redux"
+import { store } from "./redux/store"
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <CssVarsProvider theme={theme}>
-      <ConfirmProvider>
-        <CssBaseline />
-        <App />
-        <ToastContainer position="bottom-left" />
-      </ConfirmProvider>
-    </CssVarsProvider>
+    <Provider store={store}>
+      <CssVarsProvider theme={theme}>
+        <ConfirmProvider>
+          <CssBaseline />
+          <App />
+          <ToastContainer position="bottom-left" />
+        </ConfirmProvider>
+      </CssVarsProvider>
+    </Provider>
   </StrictMode>,
 )
