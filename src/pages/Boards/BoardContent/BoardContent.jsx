@@ -27,12 +27,9 @@ const ACTIVE_DRAG_ITEM_TYPE = {
 // eslint-disable-next-line react/prop-types
 function BoardContent({
   board,
-  createNewColumn,
-  createNewCard,
   dndColumnInBoard,
   dndCardInTheSameColumn,
   dndCardToTheDifferentColumn,
-  deleteColumn,
 }) {
   // const pointerSensor = useSensor(PointerSensor, {
   //   activationConstraint: { distance: 10 },
@@ -336,12 +333,7 @@ function BoardContent({
           height: (theme) => theme.trello.boardContentHeight,
           p: "10px 0",
         }}>
-        <ListColumns
-          columns={orderedColumns}
-          createNewColumn={createNewColumn}
-          createNewCard={createNewCard}
-          deleteColumn={deleteColumn}
-        />
+        <ListColumns columns={orderedColumns} />
         <DragOverlay dropAnimation={dropAnimation}>
           {!activeDragItemType && null}
           {activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN && (

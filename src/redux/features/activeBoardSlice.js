@@ -3,6 +3,7 @@ import { isEmpty } from "lodash"
 import { fetchBoardDetailsAPI } from "~/assets/apis"
 import { generatePlaceHolderCard } from "~/utils/formatters"
 import { mapOrder } from "~/utils/sorts"
+
 // Khởi tạo giá trị state của 1 slice trong redux
 const initialState = {
   currentActiveBoard: null,

@@ -23,8 +23,18 @@ import { CSS } from "@dnd-kit/utilities"
 import TextField from "@mui/material/TextField"
 import CloseIcon from "@mui/icons-material/Close"
 import { useConfirm } from "material-ui-confirm"
+import { cloneDeep } from "lodash"
+import { useDispatch, useSelector } from "react-redux"
+import {
+  selectCurrentActiveBoard,
+  updateCurrentActiveBoard,
+} from "~/redux/features/activeBoardSlice"
+import { createCardAPI, deleteColumnAPI } from "~/assets/apis"
 
-const Column = ({ column, createNewCard, deleteColumn }) => {
+const Column = ({ column }) => {
+  const dispatch = useDispatch()
+  const board = useSelector(selectCurrentActiveBoard)
+
   const {
     attributes,
     listeners,
@@ -56,13 +66,32 @@ const Column = ({ column, createNewCard, deleteColumn }) => {
   // Create new card logic
   const [isOpenCreateNewCardForm, setIsOpenCreateNewCardForm] = useState(false)
   const [newCardTitle, setNewCardTitle] = useState("")
-  const callAPICreateNewCard = () => {
+  const callAPICreateNewCard = async () => {
     if (!newCardTitle) {
       toast.error("Please enter card title", { position: "top-left" })
       return
     }
     // call Api
-    createNewCard({ title: newCardTitle, columnId: column._id })
+    const newCard = await createCardAPI({
+      title: newCardTitle,
+      columnId: column._id,
+      boardId: board._id,
+    })
+    // Update state
+    const newBoard = cloneDeep(board)
+    const updatedColumn = newBoard.columns.find(
+      (column) => column._id === newCard.columnId,
+    )
+    if (updatedColumn) {
+      if (updatedColumn.cards.some((card) => card.FE_PlaceholderCard)) {
+        updatedColumn.cards = [newCard]
+        updatedColumn.cardOrderIds = [newCard._id]
+      } else {
+        updatedColumn.cards.push(newCard)
+        updatedColumn.cardOrderIds.push(newCard._id)
+      }
+    }
+    dispatch(updateCurrentActiveBoard(newBoard))
     // close form and clear value
     setNewCardTitle("")
     setIsOpenCreateNewCardForm(false)
@@ -77,7 +106,17 @@ const Column = ({ column, createNewCard, deleteColumn }) => {
       confirmationButtonProps: { color: "error" },
     })
       .then(() => {
-        deleteColumn(column._id)
+        // updata state board
+        const newBoard = cloneDeep(board)
+        newBoard.columns = newBoard.columns.filter((c) => c._id !== column._id)
+        newBoard.columnOrderIds = newBoard.columnOrderIds.filter(
+          (id) => id !== column._id,
+        )
+        dispatch(updateCurrentActiveBoard(newBoard))
+        // call API
+        deleteColumnAPI(column._id).then((res) => {
+          toast.success(res?.deleteResult)
+        })
       })
       .catch(() => {})
   }

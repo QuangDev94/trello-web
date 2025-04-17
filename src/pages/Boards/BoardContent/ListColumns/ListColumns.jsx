@@ -11,24 +11,43 @@ import {
 } from "@dnd-kit/sortable"
 import TextField from "@mui/material/TextField"
 import CloseIcon from "@mui/icons-material/Close"
+import { createColumnAPI } from "~/assets/apis"
+import { useDispatch, useSelector } from "react-redux"
+import {
+  selectCurrentActiveBoard,
+  updateCurrentActiveBoard,
+} from "~/redux/features/activeBoardSlice"
+import { generatePlaceHolderCard } from "~/utils/formatters"
+import { cloneDeep } from "lodash"
 
-const ListColumns = ({
-  columns,
-  createNewColumn,
-  createNewCard,
-  deleteColumn,
-}) => {
+const ListColumns = ({ columns }) => {
+  const dispatch = useDispatch()
+
+  const board = useSelector(selectCurrentActiveBoard)
+
   const [isOpenCreateNewColumnForm, setIsOpenCreateNewColumnForm] =
     useState(false)
   const [newColumnTitle, setNewColumnTitle] = useState("")
 
-  const callAPIcreateNewColumn = () => {
+  const callAPIcreateNewColumn = async () => {
     if (!newColumnTitle) {
       toast.error("Please enter column title")
       return
     }
     // call Api
-    createNewColumn(newColumnTitle)
+    // Call API
+    const newColumn = await createColumnAPI({
+      title: newColumnTitle,
+      boardId: board._id,
+    })
+    // Xử lý kéo thả card trong 1 column rỗng
+    newColumn.cards = [generatePlaceHolderCard(newColumn)]
+    newColumn.cardOrderIds = [generatePlaceHolderCard(newColumn)._id]
+    // update state board
+    const newBoard = cloneDeep(board)
+    newBoard.columns.push(newColumn)
+    newBoard.columnOrderIds.push(newColumn._id)
+    dispatch(updateCurrentActiveBoard(newBoard))
     // close form and clear value
     setNewColumnTitle("")
     setIsOpenCreateNewColumnForm(false)
@@ -48,14 +67,7 @@ const ListColumns = ({
           "&::-webkit-scrollbar-track": { m: 2 },
         }}>
         {columns?.map((column) => {
-          return (
-            <Column
-              key={column?._id}
-              column={column}
-              createNewCard={createNewCard}
-              deleteColumn={deleteColumn}
-            />
-          )
+          return <Column key={column?._id} column={column} />
         })}
         {isOpenCreateNewColumnForm ? (
           <Box
