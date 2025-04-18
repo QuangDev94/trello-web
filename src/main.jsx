@@ -15,16 +15,21 @@ import { ConfirmProvider } from "material-ui-confirm"
 import { Provider } from "react-redux"
 import { store } from "./redux/store"
 
+// config react-router-dom with BrowserRouter
+import { BrowserRouter } from "react-router-dom"
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <Provider store={store}>
-      <CssVarsProvider theme={theme}>
-        <ConfirmProvider>
-          <CssBaseline />
-          <App />
-          <ToastContainer position="bottom-left" />
-        </ConfirmProvider>
-      </CssVarsProvider>
-    </Provider>
+    <BrowserRouter basename="/">
+      <Provider store={store}>
+        <CssVarsProvider theme={theme}>
+          <ConfirmProvider>
+            <CssBaseline />
+            <App />
+            <ToastContainer position="bottom-left" />
+          </ConfirmProvider>
+        </CssVarsProvider>
+      </Provider>
+    </BrowserRouter>
   </StrictMode>,
 )

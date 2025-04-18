@@ -11,7 +11,7 @@ import {
 } from "~/assets/apis"
 import { cloneDeep } from "lodash"
 import { Box, CircularProgress, Typography } from "@mui/material"
-
+import { useParams } from "react-router-dom"
 // Use Redux
 import {
   fetchBoardDetailsApiThunk,
@@ -23,11 +23,11 @@ import { useDispatch, useSelector } from "react-redux"
 function Board() {
   const dispatch = useDispatch()
   const board = useSelector(selectCurrentActiveBoard)
-
+  const { boardId } = useParams()
+  // "67f33b0b53427a8ea6338637"
   useEffect(() => {
-    const boardId = "67f33b0b53427a8ea6338637"
     dispatch(fetchBoardDetailsApiThunk(boardId))
-  }, [dispatch])
+  }, [dispatch, boardId])
 
   const dndColumnInBoard = (updateData) => {
     // update state board
