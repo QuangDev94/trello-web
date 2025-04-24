@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom"
+import { Link, useLocation, useSearchParams } from "react-router-dom"
 import Box from "@mui/material/Box"
 import Button from "@mui/material/Button"
 import Avatar from "@mui/material/Avatar"
@@ -9,7 +9,7 @@ import { ReactComponent as TrelloIcon } from "~/assets/trello.svg"
 import CardActions from "@mui/material/CardActions"
 import TextField from "@mui/material/TextField"
 import Zoom from "@mui/material/Zoom"
-// import Alert from "@mui/material/Alert"
+import Alert from "@mui/material/Alert"
 import { useForm } from "react-hook-form"
 import {
   FIELD_REQUIRED_MESSAGE,
@@ -26,6 +26,10 @@ function LoginForm() {
     handleSubmit,
     formState: { errors },
   } = useForm()
+  let [searchParams] = useSearchParams()
+  const registeredEmail = searchParams.get("registeredEmail")
+  const verifiedEmail = searchParams.get("verifiedEmail")
+  const { state } = useLocation()
   const submitLogIn = (data) => {
     console.log(data)
   }
@@ -56,7 +60,7 @@ function LoginForm() {
             }}>
             Author: QuangNguyenDev
           </Box>
-          {/* <Box
+          <Box
             sx={{
               marginTop: "1em",
               display: "flex",
@@ -64,32 +68,40 @@ function LoginForm() {
               flexDirection: "column",
               padding: "0 1em",
             }}>
-            <Alert
-              severity="success"
-              sx={{ ".MuiAlert-message": { overflow: "hidden" } }}>
-              Your email&nbsp;
-              <Typography
-                variant="span"
-                sx={{ fontWeight: "bold", "&:hover": { color: "#fdba26" } }}>
-                trungquandev@gmail.com
-              </Typography>
-              &nbsp;has been verified.
-              <br />
-              Now you can login to enjoy our services! Have a good day!
-            </Alert>
-            <Alert
-              severity="info"
-              sx={{ ".MuiAlert-message": { overflow: "hidden" } }}>
-              An email has been sent to&nbsp;
-              <Typography
-                variant="span"
-                sx={{ fontWeight: "bold", "&:hover": { color: "#fdba26" } }}>
-                trungquandev@gmail.com
-              </Typography>
-              <br />
-              Please check and verify your account before logging in!
-            </Alert>
-          </Box> */}
+            {verifiedEmail && (
+              <Alert
+                severity="success"
+                sx={{ ".MuiAlert-message": { overflow: "hidden" } }}>
+                Your email&nbsp;
+                <Typography
+                  variant="span"
+                  sx={{ fontWeight: "bold", "&:hover": { color: "#fdba26" } }}>
+                  {verifiedEmail}
+                </Typography>
+                &nbsp;has been verified.
+                <br />
+                Now you can login to enjoy our services! Have a good day!
+              </Alert>
+            )}
+            {registeredEmail && (
+              <Alert
+                severity="info"
+                sx={{ ".MuiAlert-message": { overflow: "hidden" } }}>
+                An email has been sent to&nbsp;
+                <Typography
+                  variant="span"
+                  sx={{ fontWeight: "bold", "&:hover": { color: "#fdba26" } }}>
+                  {registeredEmail}
+                </Typography>
+                <br />
+                Please click this url{" "}
+                <Link to={state.verificationLink}>
+                  {state.verificationLink}
+                </Link>{" "}
+                to check and verify your account before logging in!
+              </Alert>
+            )}
+          </Box>
           <Box sx={{ padding: "0 1em 1em 1em" }}>
             <Box sx={{ marginTop: "1em" }}>
               <TextField
