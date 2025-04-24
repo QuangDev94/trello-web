@@ -86,6 +86,14 @@ export const verifyUserAPI = async (data) => {
     "Account verified successfully! Now you can login to enjoy our service! Have a good day!",
     { theme: "colored" },
   )
-  
+
+  return response.data
+}
+
+export const loginUserAPI = async (data) => {
+  const response = await authorizedAxiosInstance.post(
+    `${API_ROOT}/v1/users/login`,
+    data,
+  )
   return response.data
 }

@@ -1,4 +1,9 @@
-import { Link, useLocation, useSearchParams } from "react-router-dom"
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom"
 import Box from "@mui/material/Box"
 import Button from "@mui/material/Button"
 import Avatar from "@mui/material/Avatar"
@@ -19,8 +24,13 @@ import {
   PASSWORD_RULE_MESSAGE,
 } from "~/utils/validators"
 import FieldErrorAlert from "~/components/Form/FieldErrorAlert"
+import { useDispatch } from "react-redux"
+import { toast } from "react-toastify"
+import { loginUserApiThunk } from "~/redux/features/userSlice"
 
 function LoginForm() {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
   const {
     register,
     handleSubmit,
@@ -31,7 +41,15 @@ function LoginForm() {
   const verifiedEmail = searchParams.get("verifiedEmail")
   const { state } = useLocation()
   const submitLogIn = (data) => {
-    console.log(data)
+    const { email, password } = data
+    toast
+      .promise(dispatch(loginUserApiThunk({ email, password })), {
+        pending: "logging in ...",
+      })
+      .then((res) => {
+        // Kiểm tra ko có lỗi thì mới redirect va route "/"
+        if (!res.error) navigate("/")
+      })
   }
   return (
     <form onSubmit={handleSubmit(submitLogIn)}>
