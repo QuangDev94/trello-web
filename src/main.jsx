@@ -23,6 +23,10 @@ import { PersistGate } from "redux-persist/integration/react"
 import { persistStore } from "redux-persist"
 const persistor = persistStore(store)
 
+// Kĩ thuật Inject Store
+import { injectStore } from "./utils/authorizeAxios"
+injectStore(store)
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter basename="/">

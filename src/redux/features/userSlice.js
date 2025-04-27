@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
-import { loginUserAPI } from "~/assets/apis"
+import { loginUserAPI, logoutUserAPI } from "~/assets/apis"
 // Khởi tạo giá trị state của 1 slice trong redux
 const initialState = {
   currentUser: null,
@@ -9,6 +9,11 @@ const initialState = {
 export const loginUserApiThunk = createAsyncThunk(
   "user/loginUserApiThunk",
   loginUserAPI,
+)
+
+export const logoutUserApiThunk = createAsyncThunk(
+  "user/logoutUserApiThunk",
+  logoutUserAPI,
 )
 
 export const userSlice = createSlice({
@@ -24,6 +29,11 @@ export const userSlice = createSlice({
 
       // Update state currentActiveBoard
       state.currentUser = user
+    })
+    builder.addCase(logoutUserApiThunk.fulfilled, (state) => {
+      // API logout sau khi gọi thành công thì sẽ clear thông tin current user ở redux
+      // Kết hợp với ProtectedRoutes => code sẽ điều hướng người dùng về trang loggin
+      state.currentUser = null
     })
   },
 })

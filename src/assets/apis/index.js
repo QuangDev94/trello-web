@@ -97,3 +97,21 @@ export const loginUserAPI = async (data) => {
   )
   return response.data
 }
+
+export const logoutUserAPI = async (showSuccessMessage = true) => {
+  const response = await authorizedAxiosInstance.delete(
+    `${API_ROOT}/v1/users/logout`,
+  )
+  if (showSuccessMessage) {
+    toast.success("Logged out successfully")
+  }
+  return response.data
+}
+
+export const refreshTokenAPI = async () => {
+  const response = await authorizedAxiosInstance.get(
+    `${API_ROOT}/v1/users/refresh_token`,
+  )
+
+  return response.data
+}

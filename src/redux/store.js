@@ -4,7 +4,7 @@ import { configureStore } from "@reduxjs/toolkit"
 import activeBoardReducer from "./features/activeBoardSlice"
 import userReducer from "./features/userSlice"
 
-import { combineReducers } from "@reduxjs/toolkit"
+import { combineReducers } from "redux"
 import { persistReducer } from "redux-persist"
 import storage from "redux-persist/lib/storage"
 
@@ -15,7 +15,8 @@ const rootPersistConfig = {
   // Biến storage ở trên - lưu vào localstorage
   storage: storage,
   // Định nghĩa các slice dữ liệu được phép duy trì qua mỗi lần F5 trình duyệt
-  whiteList: ["user"],
+  whitelist: ["user"],
+  // blackList: ["activeBoard"],
 }
 // Combine các reduces trong dự án
 const reducers = combineReducers({
