@@ -16,6 +16,7 @@ import {
   selectCurrentUser,
 } from "~/redux/features/userSlice"
 import { useConfirm } from "material-ui-confirm"
+import { Link } from "react-router-dom"
 
 const Profile = () => {
   const [anchorEl, setAnchorEl] = React.useState(null)
@@ -66,17 +67,19 @@ const Profile = () => {
         MenuListProps={{
           "aria-labelledby": "basic-button-profile",
         }}>
-        <MenuItem
-          onClick={handleClose}
-          sx={{
-            "&:hover": { color: "success.light" },
-          }}>
-          <Avatar
-            sx={{ width: "28px", height: "28px", mr: 2 }}
-            src={currentUser?.avatar}
-          />{" "}
-          Profile
-        </MenuItem>
+        <Link to="/settings/account" style={{ color: "inherit" }}>
+          <MenuItem
+            onClick={handleClose}
+            sx={{
+              "&:hover": { color: "success.light" },
+            }}>
+            <Avatar
+              sx={{ width: "28px", height: "28px", mr: 2 }}
+              src={currentUser?.avatar}
+            />{" "}
+            Profile
+          </MenuItem>
+        </Link>
         <Divider />
         <MenuItem onClick={handleClose}>
           <ListItemIcon>
