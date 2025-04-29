@@ -38,9 +38,13 @@ function AppBar() {
           theme.palette.mode === "dark" ? "#2c3e50" : "#1565c0",
       }}>
       <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <AppsIcon sx={{ color: "white" }} />
-        </Box>
+        <Link to="/">
+          <Tooltip title="Board List">
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <AppsIcon sx={{ color: "white" }} />
+            </Box>
+          </Tooltip>
+        </Link>
         <Link to="/">
           <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
             <SvgIcon
