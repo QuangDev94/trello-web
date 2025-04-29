@@ -115,3 +115,12 @@ export const refreshTokenAPI = async () => {
 
   return response.data
 }
+
+export const updateUserAPI = async (data) => {
+  const response = await authorizedAxiosInstance.put(
+    `${API_ROOT}/v1/users/update`,
+    data,
+  )
+
+  return response.data
+}
