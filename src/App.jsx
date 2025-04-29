@@ -6,6 +6,7 @@ import AccountVerification from "./pages/Auth/AccountVerification"
 import Settings from "./pages/Settings/Settings"
 import { useSelector } from "react-redux"
 import { selectCurrentUser } from "./redux/features/userSlice"
+import Boards from "./pages/Boards"
 
 // eslint-disable-next-line react/prop-types
 const ProtectedRouter = ({ user }) => {
@@ -24,7 +25,7 @@ function App() {
           // path "/" sẽ không nằm trong history của browser nữa
           // Dẫn đễn việc khi come back lại trang sẽ ko back lại path "/"
           // nếu ko đặt replace = true thì khi sẽ ko thể thực hiện chức năng comeback
-          <Navigate to="/boards/67f33b0b53427a8ea6338637" replace={true} />
+          <Navigate to="/boards" replace={true} />
         }
       />
       {/* Protected Routes (Chỉ cho truy cập vào những route bên trong khi đã login) */}
@@ -34,6 +35,7 @@ function App() {
         <Route path="/settings/account" element={<Settings />} />
         <Route path="/settings/security" element={<Settings />} />
         {/* Boards */}
+        <Route path="/boards" element={<Boards />} />
         <Route path="/boards/:boardId" element={<Board />} />
       </Route>
       {/* Authentication */}
