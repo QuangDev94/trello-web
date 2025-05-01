@@ -18,10 +18,11 @@ import CardMedia from "@mui/material/CardMedia"
 import Pagination from "@mui/material/Pagination"
 import PaginationItem from "@mui/material/PaginationItem"
 import { Link, useLocation } from "react-router-dom"
-import randomColor from "randomcolor"
 import SidebarCreateBoardModal from "./create"
 
 import { styled } from "@mui/material/styles"
+import { fetchBoardsAPI } from "~/assets/apis"
+import { DEFAULT_ITEMS_PER_PAGE, DEFAULT_PAGE } from "~/utils/constants"
 // Styles của mấy cái Sidebar item menu, anh gom lại ra đây cho gọn.
 const SidebarItem = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -59,17 +60,20 @@ function Boards() {
    * Nhắc lại kiến thức cơ bản hàm parseInt cần tham số thứ 2 là Hệ thập phân (hệ đếm cơ số 10) để đảm bảo chuẩn số cho phân trang
    */
   const page = parseInt(query.get("page") || "1", 10)
-
   useEffect(() => {
     // Fake tạm 16 cái item thay cho boards
     // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
-    setBoards([...Array(16)].map((_, i) => i))
+    // setBoards([...Array(16)].map((_, i) => i))
     // Fake tạm giả sử trong Database trả về có tổng 100 bản ghi boards
-    setTotalBoards(100)
+    // setTotalBoards(100)
 
+    // Mỗi khi url thay đổi khi chúng ta click vào pagination item khác, thì location.search thay đổi , chạy lại useEffect, và gọi lại api với query mới
     // Gọi API lấy danh sách boards ở đây...
-    // ...
-  }, [])
+    fetchBoardsAPI(location.search).then((res) => {
+      setBoards(res.boards || [])
+      setTotalBoards(res.totalBoards || 0)
+    })
+  }, [location.search])
 
   // Lúc chưa tồn tại boards > đang chờ gọi api thì hiện loading
   if (!boards) {
@@ -79,7 +83,7 @@ function Boards() {
   return (
     <Container disableGutters maxWidth={false}>
       <AppBar />
-      <Box sx={{ paddingX: 2, my: 4, flexGrow: 1 }}>
+      <Box sx={{ paddingX: 2, my: 4 }}>
         <Grid container spacing={2}>
           <Grid xs={12} sm={12} md={3} lg={3} xl={2}>
             <Stack direction="column" spacing={1}>
@@ -102,39 +106,62 @@ function Boards() {
             </Stack>
           </Grid>
 
-          <Grid container xs={12} sm={12} md={9} lg={9} xl={10}>
-            <Typography variant="h4" sx={{ fontWeight: "bold", mb: 3, ml: 2 }}>
+          <Grid
+            container
+            xs={12}
+            sm={12}
+            md={9}
+            lg={9}
+            xl={10}
+            flexDirection="column"
+            alignItems="center">
+            <Typography
+              variant="h4"
+              sx={{ fontWeight: "bold", mb: 3, textAlign: "center" }}>
               Your boards:
             </Typography>
 
             {/* Trường hợp gọi API nhưng không tồn tại cái board nào trong Database trả về */}
             {boards?.length === 0 && (
-              <Typography variant="span" sx={{ fontWeight: "bold", mb: 3 }}>
+              <Typography
+                variant="span"
+                sx={{
+                  fontWeight: "bold",
+                  mb: 3,
+                  textAlign: "center",
+                }}>
                 No result found!
               </Typography>
             )}
 
             {/* Trường hợp gọi API và có boards trong Database trả về thì render danh sách boards */}
             {boards?.length > 0 && (
-              <Grid container spacing={2}>
-                {boards.map((b) => (
-                  <Grid xs={12} sm={6} md={6} lg={4} xl={3} key={b}>
-                    <Card
-                      sx={{
-                        maxWidth: "900px",
-                        minWidth: "100px",
-                      }}>
+              <Grid container spacing={2} width="100%">
+                {boards.map((board) => (
+                  <Grid xs={12} sm={6} md={6} lg={4} xl={3} key={board._id}>
+                    <Card sx={{ height: "250px" }}>
                       {/* Ý tưởng mở rộng về sau làm ảnh Cover cho board nhé */}
-                      {/* <CardMedia component="img" height="100" image="https://picsum.photos/100" /> */}
-                      <Box
+                      <CardMedia
+                        component="img"
+                        height="100"
+                        image="https://picsum.photos/100"
+                      />
+                      {/* <Box
                         sx={{
                           height: "50px",
                           backgroundColor: randomColor(),
-                        }}></Box>
+                        }}></Box> */}
 
-                      <CardContent sx={{ p: 1.5, "&:last-child": { p: 1.5 } }}>
+                      <CardContent
+                        sx={{
+                          p: 1.5,
+                          "&:last-child": { p: 1.5 },
+                          height: "150px",
+                          display: "flex",
+                          flexDirection: "column",
+                        }}>
                         <Typography gutterBottom variant="h6" component="div">
-                          Board title
+                          {board?.title}
                         </Typography>
                         <Typography
                           variant="body2"
@@ -143,14 +170,13 @@ function Boards() {
                             overflow: "hidden",
                             whiteSpace: "nowrap",
                             textOverflow: "ellipsis",
+                            flex: 2,
                           }}>
-                          This impressive paella is a perfect party dish and a
-                          fun meal to cook together with your guests. Add 1 cup
-                          of frozen peas along with the mussels, if you like.
+                          {board?.description}
                         </Typography>
                         <Box
                           component={Link}
-                          to={"/boards/6534e1b8a235025a66b644a5"}
+                          to={`/boards/${board?._id}`}
                           sx={{
                             mt: 1,
                             display: "flex",
@@ -184,8 +210,9 @@ function Boards() {
                   color="secondary"
                   showFirstButton
                   showLastButton
-                  // Giá trị prop count của component Pagination là để hiển thị tổng số lượng page, công thức là lấy Tổng số lượng bản ghi chia cho số lượng bản ghi muốn hiển thị trên 1 page (ví dụ thường để 12, 24, 26, 48...vv). sau cùng là làm tròn số lên bằng hàm Math.ceil
-                  count={Math.ceil(totalBoards / 12)}
+                  // Giá trị prop count của component Pagination là để hiển thị tổng số lượng page, công thức là lấy Tổng số lượng bản ghi chia cho số lượng bản ghi muốn hiển thị trên 1 page
+                  // (ví dụ thường để 12, 24, 26, 48...vv). sau cùng là làm tròn số lên bằng hàm Math.ceil
+                  count={Math.ceil(totalBoards / DEFAULT_ITEMS_PER_PAGE)}
                   // Giá trị của page hiện tại đang đứng
                   page={page}
                   // Render các page item và đồng thời cũng là những cái link để chúng ta click chuyển trang
@@ -193,7 +220,7 @@ function Boards() {
                     <PaginationItem
                       component={Link}
                       to={`/boards${
-                        item.page === 1 ? "" : `?page=${item.page}`
+                        item.page === DEFAULT_PAGE ? "" : `?page=${item.page}`
                       }`}
                       {...item}
                     />
