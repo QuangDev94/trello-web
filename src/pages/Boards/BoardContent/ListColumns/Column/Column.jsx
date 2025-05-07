@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useState } from "react"
 import { toast } from "react-toastify"
-import Typography from "@mui/material/Typography"
 import Box from "@mui/material/Box"
 import Menu from "@mui/material/Menu"
 import MenuItem from "@mui/material/MenuItem"
@@ -29,7 +28,12 @@ import {
   selectCurrentActiveBoard,
   updateCurrentActiveBoard,
 } from "~/redux/features/activeBoardSlice"
-import { createCardAPI, deleteColumnAPI } from "~/assets/apis"
+import {
+  createCardAPI,
+  deleteColumnAPI,
+  updateColumnDetailsAPI,
+} from "~/assets/apis"
+import ToggleFocusInput from "~/components/Form/ToggleFocusInput"
 
 const Column = ({ column }) => {
   const dispatch = useDispatch()
@@ -120,6 +124,19 @@ const Column = ({ column }) => {
       })
       .catch(() => {})
   }
+
+  const onUpdateColumnTitle = (newTitle) => {
+    // call api
+    updateColumnDetailsAPI(column._id, { title: newTitle }).then(() => {
+      // handle data board in Redux
+      const newBoard = cloneDeep(board)
+      const columnUpdate = newBoard.columns.find((c) => c._id === column._id)
+      if (columnUpdate) {
+        columnUpdate.title = newTitle
+      }
+      dispatch(updateCurrentActiveBoard(newBoard))
+    })
+  }
   return (
     <div ref={setNodeRef} style={dndKitColumnStyle} {...attributes}>
       <Box
@@ -143,11 +160,11 @@ const Column = ({ column }) => {
             alignItems: "center",
             justifyContent: "space-between",
           }}>
-          <Typography
-            variant="h6"
-            sx={{ fontWeight: "bold", cursor: "pointer", fontSize: "1rem" }}>
-            {column?.title}
-          </Typography>
+          <ToggleFocusInput
+            initialValue={column?.title}
+            onChangedValue={onUpdateColumnTitle}
+            data-no-dnd="true"
+          />
           <Box>
             <Tooltip title="more option">
               <ExpandMoreIcon
