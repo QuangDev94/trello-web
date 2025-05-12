@@ -10,8 +10,11 @@ import Typography from "@mui/material/Typography"
 import { Card as MuiCard } from "@mui/material"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
+import { useDispatch } from "react-redux"
+import { updateCurrentActiveCard } from "~/redux/features/activeCardSlice"
 
 const Card = ({ card }) => {
+  const dispatch = useDispatch()
   const {
     attributes,
     listeners,
@@ -34,8 +37,12 @@ const Card = ({ card }) => {
       !!card?.attachments?.length
     )
   }
+  const setActiveCard = () => {
+    dispatch(updateCurrentActiveCard(card))
+  }
   return (
     <MuiCard
+      onClick={setActiveCard}
       ref={setNodeRef}
       style={dndKitCardStyle}
       {...attributes}
