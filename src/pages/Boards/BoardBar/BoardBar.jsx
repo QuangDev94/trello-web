@@ -6,12 +6,11 @@ import VpnLockIcon from "@mui/icons-material/VpnLock"
 import AddToDriveIcon from "@mui/icons-material/AddToDrive"
 import BoltIcon from "@mui/icons-material/Bolt"
 import FilterListIcon from "@mui/icons-material/FilterList"
-import Avatar from "@mui/material/Avatar"
-import AvatarGroup from "@mui/material/AvatarGroup"
 import { Tooltip } from "@mui/material"
 import Button from "@mui/material/Button"
 import PersonAddIcon from "@mui/icons-material/PersonAdd"
 import { capitalizeFirstLetter } from "~/utils/formatters"
+import BoardUserGroup from "./BoardUserGroup"
 const MENU_STYLE = {
   color: "white",
   backgroundColor: "transparent",
@@ -89,37 +88,7 @@ function BoardBar({ board }) {
           }}>
           Invite
         </Button>
-
-        <AvatarGroup
-          max={4}
-          sx={{
-            gap: "10px",
-            "& .MuiAvatar-root": {
-              width: 30,
-              height: 30,
-              fontSize: 16,
-              border: "none",
-              color: "white",
-              cursor: "pointer",
-              "&:first-of-type": { bgcolor: "#a4b0be" },
-            },
-          }}>
-          <Tooltip title="QuangNguyenDev">
-            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-          </Tooltip>
-          <Tooltip title="QuangNguyenDev">
-            <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
-          </Tooltip>
-          <Tooltip title="QuangNguyenDev">
-            <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
-          </Tooltip>
-          <Tooltip title="QuangNguyenDev">
-            <Avatar alt="Agnes Walker" src="/static/images/avatar/4.jpg" />
-          </Tooltip>
-          <Tooltip title="QuangNguyenDev">
-            <Avatar alt="Trevor Henderson" src="/static/images/avatar/5.jpg" />
-          </Tooltip>
-        </AvatarGroup>
+        <BoardUserGroup />
       </Box>
     </Box>
   )
