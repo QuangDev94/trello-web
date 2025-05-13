@@ -40,6 +40,7 @@ import {
   updateCurrentActiveCard,
 } from "~/redux/features/activeCardSlice"
 import { updateCardDetailsAPI } from "~/assets/apis"
+import { updateCardInBoard } from "~/redux/features/activeBoardSlice"
 const SidebarItem = styled(Box)(({ theme }) => ({
   display: "flex",
   alignItems: "center",
@@ -80,14 +81,15 @@ function ActiveCard() {
     // B1: Cập nhật lại card active trong modal hiện tại
     dispatch(updateCurrentActiveCard(updatedCard.value))
     // B2: Cập nhật lại bản ghi card trong activeBoard
-    // dispatch()
+    dispatch(updateCardInBoard(updatedCard.value))
   }
   const onUpdateCardTitle = (newTitle) => {
-    console.log("newTitle:", newTitle)
     // Gọi API...
     callApiUpdateCard({ title: newTitle.trim() })
   }
-
+  const onUpdateCardDescription = (newDescription) => {
+    callApiUpdateCard({ description: newDescription })
+  }
   const onUploadCardCover = (event) => {
     console.log(event.target?.files[0])
     const error = singleFileValidator(event.target?.files[0])
@@ -99,8 +101,11 @@ function ActiveCard() {
     reqData.append("cardCover", event.target?.files[0])
 
     // Gọi API...
+    toast.promise(
+      callApiUpdateCard(reqData).finally(() => (event.target.value = "")),
+      { pending: "Updating ..." },
+    )
   }
-
   return (
     <Modal
       disableScrollLock
@@ -193,7 +198,10 @@ function ActiveCard() {
               </Box>
 
               {/* Feature 03: Xử lý mô tả của Card */}
-              <CardDescriptionMdEditor />
+              <CardDescriptionMdEditor
+                cardDescription={activeCard?.description}
+                handleUpdateCardDescription={onUpdateCardDescription}
+              />
             </Box>
 
             <Box sx={{ mb: 3 }}>
