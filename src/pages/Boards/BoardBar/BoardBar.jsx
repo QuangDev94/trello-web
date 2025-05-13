@@ -25,7 +25,6 @@ const MENU_STYLE = {
   },
 }
 
-// eslint-disable-next-line react/prop-types
 function BoardBar({ board }) {
   return (
     <Box
@@ -44,7 +43,6 @@ function BoardBar({ board }) {
         <Tooltip title={board?.description}>
           <Chip
             icon={<DashboardIcon />}
-            // eslint-disable-next-line react/prop-types
             label={board?.title}
             clickable
             sx={MENU_STYLE}
@@ -53,7 +51,6 @@ function BoardBar({ board }) {
 
         <Chip
           icon={<VpnLockIcon />}
-          // eslint-disable-next-line react/prop-types
           label={capitalizeFirstLetter(board?.type)}
           clickable
           sx={MENU_STYLE}
@@ -88,7 +85,7 @@ function BoardBar({ board }) {
           }}>
           Invite
         </Button>
-        <BoardUserGroup />
+        <BoardUserGroup boardUsers={board?.FE_allUsers} />
       </Box>
     </Box>
   )
