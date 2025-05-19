@@ -44,8 +44,15 @@ export const moveCardToDifferentColumnAPI = async (updateData) => {
 
   return response.data
 }
+// Notifications
+export const fetchInvitationsAPI = async () => {
+  const response = await authorizedAxiosInstance.get(
+    `${API_ROOT}/v1/invitations`,
+  )
 
-// Invitations user join board
+  return response.data
+}
+/*Invitations user join board*/
 export const inviteUserToBoardAPI = async (data) => {
   const response = await authorizedAxiosInstance.post(
     `${API_ROOT}/v1/invitations/board`,
@@ -54,7 +61,15 @@ export const inviteUserToBoardAPI = async (data) => {
   toast.success("User invited to board successfully!")
   return response.data
 }
+/*update board Invitation status*/
+export const updateBoardInvitationAPI = async ({ notificationId, status }) => {
+  const response = await authorizedAxiosInstance.put(
+    `${API_ROOT}/v1/invitations/board/${notificationId}`,
+    { status },
+  )
 
+  return response.data
+}
 // Column
 export const createColumnAPI = async (newColumnData) => {
   const response = await authorizedAxiosInstance.post(
