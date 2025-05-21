@@ -11,7 +11,6 @@ import { selectCurrentUser } from "~/redux/features/userSlice"
 
 function CardActivitySection({ cardComments = [], onAddCardComment }) {
   const currentUser = useSelector(selectCurrentUser)
-  console.log(cardComments)
   const handleAddCardComment = (event) => {
     // Bắt hành động người dùng nhấn phím Enter && không phải hành động Shift + Enter
     if (event.key === "Enter" && !event.shiftKey) {

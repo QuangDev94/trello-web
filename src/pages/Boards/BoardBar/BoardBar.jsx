@@ -23,7 +23,6 @@ const MENU_STYLE = {
     backgroundColor: "primary.50",
   },
 }
-
 function BoardBar({ board }) {
   return (
     <Box

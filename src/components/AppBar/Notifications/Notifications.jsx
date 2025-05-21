@@ -15,10 +15,14 @@ import DoneIcon from "@mui/icons-material/Done"
 import NotInterestedIcon from "@mui/icons-material/NotInterested"
 import { useDispatch, useSelector } from "react-redux"
 import {
+  addNotification,
   fetchNotificationsApiThunk,
   selectCurrentNotifications,
   updateBoardInvitationAPIThunk,
 } from "~/redux/features/notificationsSlice"
+import { socketIoInstance } from "~/main"
+import { selectCurrentUser } from "~/redux/features/userSlice"
+import { useNavigate } from "react-router-dom"
 
 const BOARD_INVITATION_STATUS = {
   PENDING: "PENDING",
@@ -27,36 +31,61 @@ const BOARD_INVITATION_STATUS = {
 }
 
 function Notifications() {
+  const [newNotification, setNewNotification] = useState(false)
+  // get current user
+  const currentUser = useSelector(selectCurrentUser)
   // get data notifications in Redux
   const notifications = useSelector(selectCurrentNotifications)
   const dispatch = useDispatch()
-
+  const navigate = useNavigate()
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
   const handleClickNotificationIcon = (event) => {
     setAnchorEl(event.currentTarget)
+    setNewNotification(false)
   }
   const handleClose = () => {
     setAnchorEl(null)
   }
+  useEffect(() => {
+    // Fetch danh sách các lời mời invitations
+    dispatch(fetchNotificationsApiThunk())
+    // Tạo FC xử lý khi nhận được sự kiện real-time
+    const onReceiveNewInvitation = (invitation) => {
+      if (invitation.inviteeId === currentUser._id) {
+        //B1: Thêm bản ghi invitation mới vào trong redux
+        dispatch(addNotification(invitation))
+        // B2: Cập nhật trạng tháy đang có thông báo đến
+        setNewNotification(true)
+      }
+    }
+    // Lắng nghe sự kiện real-time BE_USER_INVITED_TO_BOARD
+    socketIoInstance.on("BE_USER_INVITED_TO_BOARD", onReceiveNewInvitation)
+    // Clean up event để ngăn chặn việc bị đăng kí lặp lại event nhiều lần
+    return () => {
+      socketIoInstance.off("BE_USER_INVITED_TO_BOARD", onReceiveNewInvitation)
+    }
+  }, [dispatch, currentUser._id])
 
   const updateBoardInvitation = (status, notificationId) => {
     dispatch(updateBoardInvitationAPIThunk({ notificationId, status })).then(
       (res) => {
-        console.log(res)
+        if (
+          res.payload.boardInvitation.status ===
+          BOARD_INVITATION_STATUS.ACCEPTED
+        ) {
+          navigate(`/boards/${res.payload.boardInvitation.boardId}`)
+        }
       },
     )
   }
-  useEffect(() => {
-    dispatch(fetchNotificationsApiThunk())
-  }, [dispatch])
+
   return (
     <Box>
       <Tooltip title="Notifications">
         <Badge
           color="warning"
-          // variant="none"
-          variant="dot"
+          variant={newNotification ? "dot" : "none"}
           sx={{ cursor: "pointer" }}
           id="basic-button-open-notification"
           aria-controls={open ? "basic-notification-drop-down" : undefined}
@@ -65,8 +94,7 @@ function Notifications() {
           onClick={handleClickNotificationIcon}>
           <NotificationsNoneIcon
             sx={{
-              // color: 'white'
-              color: "yellow",
+              color: newNotification ? "yellow" : "white",
             }}
           />
         </Badge>

@@ -42,7 +42,6 @@ export const userSlice = createSlice({
     })
     builder.addCase(updateUserApiThunk.fulfilled, (state, action) => {
       const user = action.payload
-      console.log(user)
       state.currentUser = user
     })
   },
