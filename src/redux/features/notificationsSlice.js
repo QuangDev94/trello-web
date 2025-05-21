@@ -32,7 +32,6 @@ const notificationsSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchNotificationsApiThunk.fulfilled, (state, action) => {
       let incomingInvitations = action.payload
-
       state.currentNotifications = Array.isArray(incomingInvitations)
         ? incomingInvitations.reverse()
         : []
@@ -41,11 +40,10 @@ const notificationsSlice = createSlice({
       updateBoardInvitationAPIThunk.fulfilled,
       (state, action) => {
         const incomingInvitation = action.payload
-
         const getInvitation = state.currentNotifications.find(
           (i) => i._id === incomingInvitation._id,
         )
-        getInvitation.boardInvitaion = incomingInvitation.boardInvitaion
+        getInvitation.boardInvitation = incomingInvitation.boardInvitation
       },
     )
   },

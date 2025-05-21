@@ -24,8 +24,8 @@ import ActiveCard from "~/components/Modal/ActiveCard/ActiveCard"
 function Board() {
   const dispatch = useDispatch()
   const board = useSelector(selectCurrentActiveBoard)
+  console.log("board: ", board)
   const { boardId } = useParams()
-  // "67f33b0b53427a8ea6338637"
   useEffect(() => {
     dispatch(fetchBoardDetailsApiThunk(boardId))
   }, [dispatch, boardId])
