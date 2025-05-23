@@ -42,6 +42,8 @@ import {
 } from "~/redux/features/activeCardSlice"
 import { updateCardDetailsAPI } from "~/assets/apis"
 import { updateCardInBoard } from "~/redux/features/activeBoardSlice"
+import { selectCurrentUser } from "~/redux/features/userSlice"
+import { CARD_MEMBER_ACTIONS } from "~/utils/constants"
 const SidebarItem = styled(Box)(({ theme }) => ({
   display: "flex",
   alignItems: "center",
@@ -71,6 +73,7 @@ const SidebarItem = styled(Box)(({ theme }) => ({
 function ActiveCard() {
   const dispatch = useDispatch()
   const activeCard = useSelector(selectCurrentActiveCard)
+  const currentUser = useSelector(selectCurrentUser)
   const isShowModalActiveCard = useSelector(selectIsShowModalActiveCard)
 
   const handleCloseModal = () => {
@@ -78,7 +81,6 @@ function ActiveCard() {
   }
   // Func dùng chung cho các trường hợp update card title, decription, cover, comment ...
   const callApiUpdateCard = async (updateData) => {
-    console.log("activeCard._id: ", activeCard._id)
     const updatedCard = await updateCardDetailsAPI(activeCard._id, updateData)
     // B1: Cập nhật lại card active trong modal hiện tại
     dispatch(updateCurrentActiveCard(updatedCard.value))
@@ -93,7 +95,6 @@ function ActiveCard() {
     callApiUpdateCard({ description: newDescription })
   }
   const onUploadCardCover = (event) => {
-    console.log(event.target?.files[0])
     const error = singleFileValidator(event.target?.files[0])
     if (error) {
       toast.error(error)
@@ -108,9 +109,13 @@ function ActiveCard() {
       { pending: "Updating ..." },
     )
   }
-
+  // Dùng async await ở đây để component con CardActivitySection chờ và nếu thành công thì mưới clear thẻ input comment
   const onAddCardComment = async (commentToAdd) => {
     await callApiUpdateCard({ commentToAdd })
+  }
+
+  const onUpdateCardMembers = (incomingMemberInfo) => {
+    callApiUpdateCard({ incomingMemberInfo })
   }
   return (
     <Modal
@@ -190,7 +195,10 @@ function ActiveCard() {
               </Typography>
 
               {/* Feature 02: Xử lý các thành viên của Card */}
-              <CardUserGroup />
+              <CardUserGroup
+                cardMemberIds={activeCard?.memberIds}
+                onUpdateCardMembers={onUpdateCardMembers}
+              />
             </Box>
 
             <Box sx={{ mb: 3 }}>
@@ -236,10 +244,21 @@ function ActiveCard() {
             </Typography>
             <Stack direction="column" spacing={1}>
               {/* Feature 05: Xử lý hành động bản thân user tự join vào card */}
-              <SidebarItem className="active">
-                <PersonOutlineOutlinedIcon fontSize="small" />
-                Join
-              </SidebarItem>
+              {/* Nếu user đang đăng nhập chưa thuộc memberIds của card thì mới cho hiện nút join */}
+              {!activeCard?.memberIds?.includes(currentUser._id) && (
+                <SidebarItem
+                  className="active"
+                  onClick={() =>
+                    onUpdateCardMembers({
+                      userId: currentUser._id,
+                      action: CARD_MEMBER_ACTIONS.ADD,
+                    })
+                  }>
+                  <PersonOutlineOutlinedIcon fontSize="small" />
+                  Join
+                </SidebarItem>
+              )}
+
               {/* Feature 06: Xử lý hành động cập nhật ảnh Cover của Card */}
               <SidebarItem className="active" component="label">
                 <ImageOutlinedIcon fontSize="small" />

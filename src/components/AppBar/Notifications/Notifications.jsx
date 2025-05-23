@@ -20,9 +20,9 @@ import {
   selectCurrentNotifications,
   updateBoardInvitationAPIThunk,
 } from "~/redux/features/notificationsSlice"
-import { socketIoInstance } from "~/main"
 import { selectCurrentUser } from "~/redux/features/userSlice"
 import { useNavigate } from "react-router-dom"
+import { socketIoInstance } from "~/socketClient"
 
 const BOARD_INVITATION_STATUS = {
   PENDING: "PENDING",
