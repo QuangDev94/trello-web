@@ -7,8 +7,7 @@ import ListItemIcon from "@mui/material/ListItemIcon"
 import Tooltip from "@mui/material/Tooltip"
 import IconButton from "@mui/material/IconButton"
 import Avatar from "@mui/material/Avatar"
-import PersonAdd from "@mui/icons-material/PersonAdd"
-import Settings from "@mui/icons-material/Settings"
+
 import Logout from "@mui/icons-material/Logout"
 import { useDispatch, useSelector } from "react-redux"
 import {
@@ -77,22 +76,10 @@ const Profile = () => {
               sx={{ width: "28px", height: "28px", mr: 2 }}
               src={currentUser?.avatar}
             />{" "}
-            Profile
+            Profile & Settings
           </MenuItem>
         </Link>
         <Divider />
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <PersonAdd fontSize="small" />
-          </ListItemIcon>
-          Add another account
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <Settings fontSize="small" />
-          </ListItemIcon>
-          Settings
-        </MenuItem>
         <MenuItem
           onClick={handleLogout}
           sx={{
