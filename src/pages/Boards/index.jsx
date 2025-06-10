@@ -9,8 +9,6 @@ import Grid from "@mui/material/Unstable_Grid2"
 import Stack from "@mui/material/Stack"
 import Divider from "@mui/material/Divider"
 import SpaceDashboardIcon from "@mui/icons-material/SpaceDashboard"
-import ListAltIcon from "@mui/icons-material/ListAlt"
-import HomeIcon from "@mui/icons-material/Home"
 import ArrowRightIcon from "@mui/icons-material/ArrowRight"
 import Card from "@mui/material/Card"
 import CardContent from "@mui/material/CardContent"
@@ -94,14 +92,6 @@ function Boards() {
               <SidebarItem className="active">
                 <SpaceDashboardIcon fontSize="small" />
                 Boards
-              </SidebarItem>
-              <SidebarItem>
-                <ListAltIcon fontSize="small" />
-                Templates
-              </SidebarItem>
-              <SidebarItem>
-                <HomeIcon fontSize="small" />
-                Home
               </SidebarItem>
             </Stack>
             <Divider sx={{ my: 1 }} />

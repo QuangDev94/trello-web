@@ -4,15 +4,8 @@ import AppsIcon from "@mui/icons-material/Apps"
 import { ReactComponent as TrelloLogoIcon } from "~/assets/trello.svg"
 import SvgIcon from "@mui/material/SvgIcon"
 import Typography from "@mui/material/Typography"
-import Workspaces from "./Menus/Workspaces"
-import Recent from "./Menus/Recent"
-import Starred from "./Menus/Starred"
-import Templates from "./Menus/Templates"
-import Button from "@mui/material/Button"
 import Tooltip from "@mui/material/Tooltip"
-import HelpOutlineIcon from "@mui/icons-material/HelpOutline"
 import Profile from "./Menus/Profile"
-import LibraryAddIcon from "@mui/icons-material/LibraryAdd"
 import { Link } from "react-router-dom"
 import Notifications from "./Notifications/Notifications"
 import AutoCompleteSearchBoard from "./SearchBoards/AutoCompleteSearchBoard"
@@ -55,22 +48,6 @@ function AppBar() {
             </Typography>
           </Box>
         </Link>
-        <Box sx={{ display: { xs: "none", md: "flex" } }}>
-          <Workspaces />
-          <Recent />
-          <Starred />
-          <Templates />
-          <Button
-            variant="outlined"
-            startIcon={<LibraryAddIcon />}
-            sx={{
-              color: "white",
-              border: "none",
-              "&:hover": { border: "none", backgroundColor: "#34495e" },
-            }}>
-            Create
-          </Button>
-        </Box>
       </Box>
       <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
         {/* Search quick board */}
@@ -79,9 +56,6 @@ function AppBar() {
         <ModeSelect />
         {/* Notification */}
         <Notifications />
-        <Tooltip title="Help">
-          <HelpOutlineIcon sx={{ cursor: "pointer", color: "white" }} />
-        </Tooltip>
         <Profile />
       </Box>
     </Box>

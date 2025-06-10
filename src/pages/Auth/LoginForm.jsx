@@ -40,6 +40,7 @@ function LoginForm() {
   const registeredEmail = searchParams.get("registeredEmail")
   const verifiedEmail = searchParams.get("verifiedEmail")
   const { state } = useLocation()
+  console.log("state: ", state)
   const submitLogIn = (data) => {
     const { email, password } = data
     toast
